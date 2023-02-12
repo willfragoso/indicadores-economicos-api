@@ -21,11 +21,19 @@ public class IndiceIncidenciaPobrezaService {
         this.povertyHeadcountRatioComponent = povertyHeadcountRatioComponent;
     }
 
-    public PesquisaPageDto<IndiceIncidenciaPobrezaGridDto> recuperarIndicadoresPobrezaDoPais(String codigoPais) {
+    public PesquisaPageDto<IndiceIncidenciaPobrezaGridDto> recuperarIndicadoresPobrezaDoPais(
+            String codigoPais,
+            Integer tamanhoPagina,
+            Integer numeroPagina
+    ) {
         WorldBankPovertyHeadcountRatioResponse worldBankPovertyHeadcountRatioResponse;
 
         try {
-            worldBankPovertyHeadcountRatioResponse = povertyHeadcountRatioComponent.getPovertyHeadcountRatioData(codigoPais);
+            worldBankPovertyHeadcountRatioResponse = povertyHeadcountRatioComponent.getPovertyHeadcountRatioData(
+                    codigoPais,
+                    tamanhoPagina,
+                    numeroPagina
+            );
         } catch (Exception exception) {
             throw new BusinessException(
                     String.format(

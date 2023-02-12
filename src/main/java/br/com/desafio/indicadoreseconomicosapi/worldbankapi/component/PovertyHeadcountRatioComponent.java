@@ -13,9 +13,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class PovertyHeadcountRatioComponent {
@@ -29,15 +32,24 @@ public class PovertyHeadcountRatioComponent {
         this.objectMapper = objectMapper;
     }
 
-    public WorldBankPovertyHeadcountRatioResponse getPovertyHeadcountRatioData(String countryCode) {
+    public WorldBankPovertyHeadcountRatioResponse getPovertyHeadcountRatioData(String countryCode, Integer perPage, Integer page) {
         WorldBankPovertyHeadcountRatioResponse worldBankPovertyHeadcountRatioResponse;
 
         try {
+            // URI (URL) parameters
+            Map<String, String> urlParams = new HashMap<>();
+            urlParams.put("countryCode", countryCode);
+
+            // Query parameters
+            UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(POVERTY_HEADCOUNT_RATIO_URL)
+                    .queryParam("page", page.toString())
+                    .queryParam("per_page", perPage.toString());
+
             RestTemplate restTemplate = new RestTemplate();
+
             ResponseEntity<String> responseEntity = restTemplate.getForEntity(
-                    POVERTY_HEADCOUNT_RATIO_URL,
-                    String.class,
-                    countryCode
+                    uriComponentsBuilder.buildAndExpand(urlParams).toUri(),
+                    String.class
             );
             if (responseEntity.getStatusCode() == HttpStatus.OK) {
 
