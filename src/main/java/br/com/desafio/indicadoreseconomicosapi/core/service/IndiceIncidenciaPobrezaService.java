@@ -5,6 +5,7 @@ import br.com.desafio.indicadoreseconomicosapi.api.dto.page.PesquisaPageDto;
 import br.com.desafio.indicadoreseconomicosapi.core.exception.BusinessException;
 import br.com.desafio.indicadoreseconomicosapi.worldbankapi.component.PovertyHeadcountRatioComponent;
 import br.com.desafio.indicadoreseconomicosapi.worldbankapi.model.WorldBankPovertyHeadcountRatioResponse;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,8 @@ public class IndiceIncidenciaPobrezaService {
             Integer tamanhoPagina,
             Integer numeroPagina
     ) {
+        validarParametrosPesquisa(codigoPais, tamanhoPagina, numeroPagina);
+
         WorldBankPovertyHeadcountRatioResponse worldBankPovertyHeadcountRatioResponse;
 
         try {
@@ -64,6 +67,18 @@ public class IndiceIncidenciaPobrezaService {
         pesquisaPageDto.setNumeroPagina(worldBankPovertyHeadcountRatioResponse.getPovertyHeadcountRatioPageInfo().getPage());
 
         return pesquisaPageDto;
+    }
+
+    private void validarParametrosPesquisa(String codigoPais, Integer tamanhoPagina, Integer numeroPagina) {
+        if (StringUtils.isAllBlank(codigoPais)) {
+            throw new BusinessException("É necessário informar o código do país.");
+        }
+        if (tamanhoPagina != null && tamanhoPagina <= 0) {
+            throw new BusinessException("O número informado para o tamanho da página deve ser positivo.");
+        }
+        if (numeroPagina != null && numeroPagina <= 0) {
+            throw new BusinessException("O número informado para a pagina desejada deve ser positivo.");
+        }
     }
 
 }
